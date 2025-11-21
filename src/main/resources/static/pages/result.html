@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="전주대학교 전공 유형 검사 결과">
+    <title>검사 결과 | 전공 유형 검사</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/components/header.css">
+    <link rel="stylesheet" href="../css/components/button.css">
+    <link rel="stylesheet" href="../css/pages/result.css">
+
+    <!-- Chart.js for radar chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-container">
+            <a href="../index.html" class="header-logo">
+                <div class="logo-icon">JJ</div>
+                <span>전공 유형 검사</span>
+            </a>
+
+            <nav class="header-nav" id="headerNav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">홈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="test.html" class="nav-link">검사하기</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#departments" class="nav-link">학과소개</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#about" class="nav-link">소개</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Result Container -->
+    <main class="result-container">
+        <!-- Hero Section -->
+        <section class="result-hero">
+            <div class="result-hero-content">
+                <h1 class="result-title">검사 결과</h1>
+                <div class="personality-badge" id="personalityBadge">
+                    <div class="badge-icon">🎯</div>
+                    <div class="badge-text">
+                        <span class="badge-label">당신의 유형은</span>
+                        <span class="badge-value" id="personalityType">분석 중...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="result-section summary-section">
+            <div class="container">
+                <div class="summary-card">
+                    <h2 class="summary-title">✨ 당신은...</h2>
+                    <p class="summary-text" id="personalitySummary">로딩 중...</p>
+                    <p class="summary-text" id="strengthSummary">로딩 중...</p>
+                    <p class="summary-text" id="interestSummary"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interest Tags Section (새로 추가) -->
+        <section class="result-section interest-tags-section" id="interestTagsSection">
+            <div class="container">
+                <div class="interest-tags-wrapper">
+                    <h2 class="interest-tags-title">🏷️ 나의 관심사</h2>
+                    <div class="interest-tags-container" id="interestTagsContainer">
+                        <p class="no-tags-message">관심사를 분석하는 중...</p>  </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Radar Chart Section -->
+        <section class="result-section chart-section">
+            <div class="container">
+                <h2 class="section-title">📊 나의 적성 분석</h2>
+                <div class="chart-wrapper">
+                    <canvas id="radarChart"></canvas>
+                </div>
+                <div class="aptitude-legend" id="aptitudeLegend">
+                    <!-- Dynamically generated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Departments Section -->
+        <section class="result-section departments-section">
+            <div class="container">
+                <h2 class="section-title">🎓 추천 학과 Top 3</h2>
+                <p class="section-subtitle" id="topDepartmentSummary">로딩 중...</p>
+                
+                <div class="departments-grid" id="topDepartments">
+                    <!-- Dynamically generated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Worst Departments Section -->
+        <section class="result-section worst-section">
+            <div class="container">
+                <h2 class="section-title">⚠️ 신중히 고려해야 할 학과</h2>
+                <p class="section-subtitle">적성이 맞지 않을 수 있는 학과들입니다</p>
+                
+                <div class="worst-grid" id="worstDepartments">
+                    <!-- Dynamically generated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Similar Departments Section -->
+        <section class="result-section similar-section" id="similarSection" style="display: none;">
+            <div class="container">
+                <h2 class="section-title">💡 관심사 기반 추천</h2>
+                <p class="section-subtitle" id="similarSummary">로딩 중...</p>
+                
+                <div class="similar-grid" id="similarDepartments">
+                    <!-- Dynamically generated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Share Section -->
+        <section class="result-section share-section">
+            <div class="container">
+                <h2 class="section-title">🔗 결과 공유하기</h2>
+                <div class="share-box">
+                    <input type="text" class="share-url" id="shareUrl" readonly>
+                    <button class="btn btn-primary" id="copyBtn">
+                        📋 링크 복사
+                    </button>
+                </div>
+                <div class="share-message" id="shareMessage" style="display: none;">
+                    ✅ 링크가 복사되었습니다!
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <section class="result-section action-section">
+            <div class="container">
+                <div class="action-buttons">
+                    <a href="test.html" class="btn btn-outline btn-lg">
+                        🔄 다시 검사하기
+                    </a>
+                    <a href="../index.html" class="btn btn-primary btn-lg">
+                        🏠 홈으로 돌아가기
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>전공 유형 검사</h3>
+                    <p style="color: var(--gray-400); margin-top: var(--spacing-md);">
+                        나에게 맞는 전공을 찾아보세요<br>
+                        전주대학교 70개 학과 정보 제공
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 전주대학교 전공 유형 검사. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../js/components/header.js"></script>
+    <script src="../js/pages/result.js"></script>
+</body>
+</html>

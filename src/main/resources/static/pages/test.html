@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검사하기 | 전공 유형 검사</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/components/header.css">
+    <link rel="stylesheet" href="../css/components/button.css">
+    <link rel="stylesheet" href="../css/pages/test.css">
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="header-container">
+            <a href="../index.html" class="header-logo">
+                <div class="logo-icon">JJ</div>
+                <span>전공 유형 검사</span>
+            </a>
+            </div>
+    </header>
+
+    <main class="test-container">
+        <div class="progress-wrapper">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                진행률 <span id="progressPercent">0%</span>
+            </div>
+        </div>
+
+        <div class="questions-list" id="questionsList">
+            </div>
+
+        <div class="test-navigation">
+            <button class="btn btn-primary btn-lg btn-block" id="nextPageBtn" style="width: 100%; max-width: 400px;">
+                다음 페이지 (1/2)
+            </button>
+        </div>
+
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">결과를 분석하고 있습니다...<br><span style="font-size: 0.9rem; opacity: 0.8;">잠시만 기다려주세요</span></p>
+        </div>
+    </main>
+
+    <script src="../js/components/header.js"></script>
+    <script src="../js/pages/test.js"></script>
+</body>
+</html>
