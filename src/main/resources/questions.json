@@ -1,0 +1,282 @@
+[
+  {
+    "question_text": "책을 읽거나 글을 쓰는 것을 좋아하며, 문학 작품에 흥미가 있다.",
+    "aptitude_type": "언어능력",
+    "is_reverse": false,
+    "question_order": 1,
+    "tags": ["독서", "글쓰기", "문학", "국어", "작가", "스토리"]
+  },
+  {
+    "question_text": "외국어를 배우는 것에 흥미가 있고, 다른 나라 문화에 관심이 많다.",
+    "aptitude_type": "언어능력",
+    "is_reverse": false,
+    "question_order": 2,
+    "tags": ["외국어", "영어", "일본어", "중국어", "해외", "관광", "글로벌"]
+  },
+  {
+    "question_text": "다른 사람에게 내 생각을 말이나 글로 조리 있게 표현하는 것이 어렵다.",
+    "aptitude_type": "언어능력",
+    "is_reverse": true,
+    "question_order": 3,
+    "tags": []
+  },
+  {
+    "question_text": "역사적 사건이나 인물의 이야기를 탐구하는 것을 좋아한다.",
+    "aptitude_type": "언어능력",
+    "is_reverse": false,
+    "question_order": 4,
+    "tags": ["역사", "인문", "문화", "콘텐츠", "큐레이터"]
+  },
+  {
+    "question_text": "복잡한 문제를 논리적인 순서나 알고리즘으로 구조화하는 것을 좋아한다.",
+    "aptitude_type": "논리/분석력",
+    "is_reverse": false,
+    "question_order": 5,
+    "tags": ["논리", "분석", "코딩", "프로그래밍", "컴퓨터", "IT", "알고리즘"]
+  },
+  {
+    "question_text": "숫자나 데이터를 다루고 통계를 내는 일에 흥미를 느낀다.",
+    "aptitude_type": "논리/분석력",
+    "is_reverse": false,
+    "question_order": 6,
+    "tags": ["수학", "통계", "데이터", "금융", "회계", "빅데이터", "분석"]
+  },
+  {
+    "question_text": "수학적인 계산이나 복잡한 논리 퍼즐을 푸는 것이 머리 아프다.",
+    "aptitude_type": "논리/분석력",
+    "is_reverse": true,
+    "question_order": 7,
+    "tags": []
+  },
+  {
+    "question_text": "현상에 대해 객관적으로 분석하고 원인과 결과를 따지는 것을 좋아한다.",
+    "aptitude_type": "논리/분석력",
+    "is_reverse": false,
+    "question_order": 8,
+    "tags": ["분석", "연구", "논리", "과학", "법", "행정"]
+  },
+  {
+    "question_text": "남들이 생각하지 못한 독창적인 아이디어나 발명을 하는 것을 즐긴다.",
+    "aptitude_type": "창의력",
+    "is_reverse": false,
+    "question_order": 9,
+    "tags": ["창의", "아이디어", "발명", "기획", "특허", "창업"]
+  },
+  {
+    "question_text": "웹툰, 게임, 영상 등 나만의 콘텐츠를 창작하는 것에 관심이 있다.",
+    "aptitude_type": "창의력",
+    "is_reverse": false,
+    "question_order": 10,
+    "tags": ["창작", "웹툰", "게임", "영상", "콘텐츠", "예술", "유튜브"]
+  },
+  {
+    "question_text": "새로운 시도보다는 정해진 매뉴얼이나 규칙을 따르는 것이 편하다.",
+    "aptitude_type": "창의력",
+    "is_reverse": true,
+    "question_order": 11,
+    "tags": []
+  },
+  {
+    "question_text": "기존에 없던 새로운 서비스나 상품을 기획해보는 상상을 자주 한다.",
+    "aptitude_type": "창의력",
+    "is_reverse": false,
+    "question_order": 12,
+    "tags": ["기획", "마케팅", "창업", "디자인", "개발"]
+  },
+  {
+    "question_text": "친구의 고민을 잘 들어주고 감정에 깊이 공감하는 편이다.",
+    "aptitude_type": "사회성/공감능력",
+    "is_reverse": false,
+    "question_order": 13,
+    "tags": ["공감", "상담", "심리", "소통", "복지", "친구"]
+  },
+  {
+    "question_text": "어려운 사람을 돕거나 봉사활동을 하는 것에서 보람을 느낀다.",
+    "aptitude_type": "사회성/공감능력",
+    "is_reverse": false,
+    "question_order": 14,
+    "tags": ["봉사", "사회복지", "간호", "의료", "교육", "재활", "돌봄"]
+  },
+  {
+    "question_text": "사람들과 어울리는 것보다 혼자 시간을 보내는 것을 훨씬 선호한다.",
+    "aptitude_type": "사회성/공감능력",
+    "is_reverse": true,
+    "question_order": 15,
+    "tags": []
+  },
+  {
+    "question_text": "동물이나 식물을 돌보고 키우는 것에 애정과 책임감을 느낀다.",
+    "aptitude_type": "사회성/공감능력",
+    "is_reverse": false,
+    "question_order": 16,
+    "tags": ["반려동물", "동물", "식물", "생명", "돌봄", "환경"]
+  },
+  {
+    "question_text": "팀 프로젝트나 모임에서 리더 역할을 맡아 이끄는 것을 좋아한다.",
+    "aptitude_type": "주도성/리더십",
+    "is_reverse": false,
+    "question_order": 17,
+    "tags": ["리더십", "경영", "팀워크", "발표", "장교", "관리"]
+  },
+  {
+    "question_text": "남들 앞에 나서서 발표하거나 설득하는 일이 부담스럽다.",
+    "aptitude_type": "주도성/리더십",
+    "is_reverse": true,
+    "question_order": 18,
+    "tags": []
+  },
+  {
+    "question_text": "나만의 사업을 운영하거나 조직을 경영하는 목표가 있다.",
+    "aptitude_type": "주도성/리더십",
+    "is_reverse": false,
+    "question_order": 19,
+    "tags": ["창업", "경영", "사업", "CEO", "경제", "도전"]
+  },
+  {
+    "question_text": "사람들의 의견을 조율하고 갈등을 해결하는 역할을 잘 수행한다.",
+    "aptitude_type": "주도성/리더십",
+    "is_reverse": false,
+    "question_order": 20,
+    "tags": ["소통", "인사", "관리", "정치", "행정", "서비스"]
+  },
+  {
+    "question_text": "운동을 즐기며 신체를 단련하는 활동에 에너지를 얻는다.",
+    "aptitude_type": "신체-활동성",
+    "is_reverse": false,
+    "question_order": 21,
+    "tags": ["운동", "체육", "스포츠", "건강", "축구", "태권도"]
+  },
+  {
+    "question_text": "사무실에 앉아있는 것보다 몸을 움직이며 현장에서 일하는 것이 좋다.",
+    "aptitude_type": "신체-활동성",
+    "is_reverse": false,
+    "question_order": 22,
+    "tags": ["현장", "활동", "경찰", "소방", "군인", "여행", "관광"]
+  },
+  {
+    "question_text": "활동적인 것보다 가만히 앉아서 하는 정적인 활동이 더 편하다.",
+    "aptitude_type": "신체-활동성",
+    "is_reverse": true,
+    "question_order": 23,
+    "tags": []
+  },
+  {
+    "question_text": "손재주가 있어서 요리나 무언가를 만드는 실습 활동을 좋아한다.",
+    "aptitude_type": "신체-활동성",
+    "is_reverse": false,
+    "question_order": 24,
+    "tags": ["조리", "요리", "식품", "실습", "제작", "기술"]
+  },
+  {
+    "question_text": "그림 그리기, 디자인, 꾸미기 등 미적 감각을 발휘하는 것을 좋아한다.",
+    "aptitude_type": "예술감각/공간지각",
+    "is_reverse": false,
+    "question_order": 25,
+    "tags": ["미술", "디자인", "예술", "웹툰", "패션", "창작"]
+  },
+  {
+    "question_text": "건물의 구조나 인테리어, 공간 배치에 관심이 많다.",
+    "aptitude_type": "예술감각/공간지각",
+    "is_reverse": false,
+    "question_order": 26,
+    "tags": ["건축", "공간", "인테리어", "설계", "토목", "부동산"]
+  },
+  {
+    "question_text": "색채, 소리, 영상 등의 예술적 요소에 대해 별로 감흥이 없다.",
+    "aptitude_type": "예술감각/공간지각",
+    "is_reverse": true,
+    "question_order": 27,
+    "tags": []
+  },
+  {
+    "question_text": "음악, 연기, 공연 등 예술을 통해 사람들에게 감동을 주는 일에 관심이 있다.",
+    "aptitude_type": "예술감각/공간지각",
+    "is_reverse": false,
+    "question_order": 28,
+    "tags": ["음악", "공연", "연기", "영화", "방송", "엔터테인먼트"]
+  },
+  {
+    "question_text": "할 일을 미리 계획하고 체계적으로 순서를 정해 처리한다.",
+    "aptitude_type": "체계성/꼼꼼함",
+    "is_reverse": false,
+    "question_order": 29,
+    "tags": ["계획", "체계", "행정", "관리", "사무", "경영"]
+  },
+  {
+    "question_text": "규정이나 법규, 절차를 정확하게 지키는 것을 중요하게 생각한다.",
+    "aptitude_type": "체계성/꼼꼼함",
+    "is_reverse": false,
+    "question_order": 30,
+    "tags": ["법", "규정", "공무원", "경찰", "행정", "회계"]
+  },
+  {
+    "question_text": "꼼꼼하게 세부 사항을 챙기기보다는 즉흥적으로 행동하는 편이다.",
+    "aptitude_type": "체계성/꼼꼼함",
+    "is_reverse": true,
+    "question_order": 31,
+    "tags": []
+  },
+  {
+    "question_text": "자료를 정리하고 분류하거나, 오류를 찾아내는 일에 소질이 있다.",
+    "aptitude_type": "체계성/꼼꼼함",
+    "is_reverse": false,
+    "question_order": 32,
+    "tags": ["정보", "도서관", "사서", "데이터", "편집", "품질"]
+  },
+  {
+    "question_text": "자연 현상이나 과학적 원리에 대해 호기심을 가지고 탐구한다.",
+    "aptitude_type": "탐구심",
+    "is_reverse": false,
+    "question_order": 33,
+    "tags": ["과학", "연구", "실험", "물리", "화학", "생명"]
+  },
+  {
+    "question_text": "기계 장치나 전자기기의 작동 원리를 파악하고 다루는 것을 좋아한다.",
+    "aptitude_type": "탐구심",
+    "is_reverse": false,
+    "question_order": 34,
+    "tags": ["기계", "전기", "전자", "자동차", "로봇", "공학", "기술"]
+  },
+  {
+    "question_text": "깊이 있는 학문적 연구나 이론 공부는 지루하게 느껴진다.",
+    "aptitude_type": "탐구심",
+    "is_reverse": true,
+    "question_order": 35,
+    "tags": []
+  },
+  {
+    "question_text": "4차 산업혁명, AI, 신소재 등 미래 기술 트렌드에 관심이 많다.",
+    "aptitude_type": "탐구심",
+    "is_reverse": false,
+    "question_order": 36,
+    "tags": ["IT", "AI", "인공지능", "신소재", "미래", "기술"]
+  },
+  {
+    "question_text": "어려운 문제에 부딪혔을 때 포기하지 않고 끝까지 해결책을 찾는다.",
+    "aptitude_type": "문제해결능력",
+    "is_reverse": false,
+    "question_order": 37,
+    "tags": ["문제해결", "도전", "끈기", "프로젝트", "창업"]
+  },
+  {
+    "question_text": "예상치 못한 돌발 상황에서도 침착하게 대처하는 편이다.",
+    "aptitude_type": "문제해결능력",
+    "is_reverse": false,
+    "question_order": 38,
+    "tags": ["위기관리", "응급", "소방", "경찰", "리더십"]
+  },
+  {
+    "question_text": "답이 없는 문제나 복잡한 상황을 마주하면 쉽게 스트레스를 받는다.",
+    "aptitude_type": "문제해결능력",
+    "is_reverse": true,
+    "question_order": 39,
+    "tags": []
+  },
+  {
+    "question_text": "실생활의 불편함을 개선하기 위한 실용적인 해결 방안을 고민한다.",
+    "aptitude_type": "문제해결능력",
+    "is_reverse": false,
+    "question_order": 40,
+    "tags": ["발명", "공학", "디자인", "창업", "행정"]
+  }
+]

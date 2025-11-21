@@ -25,77 +25,44 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // 1. 질문 데이터 초기화
+        // 1. 질문 데이터 초기화 (JSON 파일에서 로딩)
         if (questionRepository.count() == 0) {
             initQuestions();
         }
 
-        // 2. 학과 데이터 초기화
+        // 2. 학과 데이터 초기화 (JSON 파일에서 로딩)
         if (departmentRepository.count() == 0) {
             initDepartments();
         }
     }
 
     private void initQuestions() {
-        log.info("📝 질문 데이터 로딩 중...");
-        List<Question> questions = new ArrayList<>();
-
-        // 1. 언어능력
-        addQ(questions, 1, "책을 읽거나 글을 쓰는 것을 좋아한다.", "언어능력", false, List.of("독서", "글쓰기", "문학"));
-        addQ(questions, 2, "다른 사람에게 내 생각을 말이나 글로 표현하는 것이 어렵다.", "언어능력", true, List.of());
-
-        // 2. 논리/분석력
-        addQ(questions, 3, "복잡한 문제를 단계별로 분석하고 해결하는 것을 좋아한다.", "논리/분석력", false, List.of("논리", "분석", "문제해결"));
-        addQ(questions, 4, "숫자나 데이터를 다루는 일은 나와 맞지 않는다.", "논리/분석력", true, List.of());
-
-        // 3. 창의력
-        addQ(questions, 5, "새로운 아이디어나 독창적인 방법을 생각해내는 것을 즐긴다.", "창의력", false, List.of("창의", "아이디어", "기획"));
-        addQ(questions, 6, "정해진 틀이나 규칙을 따르는 것이 더 편하다.", "창의력", true, List.of());
-
-        // 4. 사회성/공감능력
-        addQ(questions, 7, "다른 사람의 감정을 잘 이해하고 공감할 수 있다.", "사회성/공감능력", false, List.of("소통", "공감", "사회성"));
-        addQ(questions, 8, "혼자 일하는 것이 다른 사람과 협력하는 것보다 편하다.", "사회성/공감능력", true, List.of());
-
-        // 5. 주도성/리더십
-        addQ(questions, 9, "팀 프로젝트에서 리더 역할을 맡는 것을 선호한다.", "주도성/리더십", false, List.of("리더십", "주도", "팀워크"));
-        addQ(questions, 10, "다른 사람을 이끌거나 설득하는 것이 부담스럽다.", "주도성/리더십", true, List.of());
-
-        // 6. 신체-활동성
-        addQ(questions, 11, "운동이나 신체 활동을 하는 것을 좋아한다.", "신체-활동성", false, List.of("운동", "활동", "체육"));
-        addQ(questions, 12, "오래 앉아서 일하는 것이 나에게 더 잘 맞는다.", "신체-활동성", true, List.of());
-
-        // 7. 예술감각/공간지각
-        addQ(questions, 13, "그림, 음악, 디자인 등 예술적인 활동에 관심이 많다.", "예술감각/공간지각", false, List.of("예술", "디자인", "미술"));
-        addQ(questions, 14, "색상이나 형태의 조화를 생각하는 것이 어렵다.", "예술감각/공간지각", true, List.of());
-
-        // 8. 체계성/꼼꼼함
-        addQ(questions, 15, "일을 계획적이고 체계적으로 처리하는 것을 선호한다.", "체계성/꼼꼼함", false, List.of("체계", "계획", "꼼꼼"));
-        addQ(questions, 16, "세부적인 것보다 큰 그림을 보는 것이 더 중요하다고 생각한다.", "체계성/꼼꼼함", true, List.of());
-
-        // 9. 탐구심
-        addQ(questions, 17, "새로운 지식을 배우고 연구하는 것을 좋아한다.", "탐구심", false, List.of("연구", "학습", "탐구"));
-        addQ(questions, 18, "'왜 그럴까?'라는 의문을 가지고 깊이 파고드는 것이 번거롭게 느껴진다.", "탐구심", true, List.of());
-
-        // 10. 문제해결능력
-        addQ(questions, 19, "어려운 문제에 부딪혔을 때 포기하지 않고 해결 방법을 찾는다.", "문제해결능력", false, List.of("문제해결", "끈기", "도전"));
-        addQ(questions, 20, "예상치 못한 상황이 생기면 당황하고 어떻게 대처해야 할지 모르겠다.", "문제해결능력", true, List.of());
-
-        questionRepository.saveAll(questions);
-        log.info("✅ 질문 {}개 로딩 완료!", questions.size());
-    }
-
-    private void addQ(List<Question> list, int order, String text, String type, boolean rev, List<String> tags) {
-        Question q = new Question();
-        q.setQuestionOrder(order);
-        q.setQuestionText(text);
-        q.setAptitudeType(type);
-        q.setReverse(rev);
+        log.info("📝 질문 데이터 로딩 중... (questions.json)");
         try {
-            q.setTags(objectMapper.writeValueAsString(tags));
+            InputStream inputStream = getClass().getResourceAsStream("/questions.json");
+            List<Map<String, Object>> rawData = objectMapper.readValue(inputStream, new TypeReference<>() {});
+
+            List<Question> questions = new ArrayList<>();
+
+            for (Map<String, Object> data : rawData) {
+                Question q = new Question();
+                q.setQuestionText((String) data.get("question_text"));
+                q.setAptitudeType((String) data.get("aptitude_type"));
+                q.setReverse((Boolean) data.get("is_reverse"));
+                q.setQuestionOrder((Integer) data.get("question_order"));
+
+                // JSON의 tags 리스트를 문자열로 변환하여 저장
+                List<String> tags = (List<String>) data.get("tags");
+                q.setTags(objectMapper.writeValueAsString(tags));
+
+                questions.add(q);
+            }
+
+            questionRepository.saveAll(questions);
+            log.info("✅ 질문 {}개 로딩 완료!", questions.size());
         } catch (Exception e) {
-            q.setTags("[]");
+            log.error("❌ 질문 데이터 로딩 실패: {}", e.getMessage());
         }
-        list.add(q);
     }
 
     private void initDepartments() {
@@ -117,7 +84,7 @@ public class DataLoader implements CommandLineRunner {
                 dept.setAptitudeScores(objectMapper.writeValueAsString(scores));
                 dept.setDescription(objectMapper.writeValueAsString(aptitudeDesc));
 
-                // Python 로직 이식: 태그 추출 및 카테고리 추론
+                // 태그 추출 및 카테고리 추론
                 List<String> tags = extractTags(aptitudeDesc);
                 String category = inferCategory(name);
 
@@ -135,7 +102,7 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
-    // Python의 extract_department_tags 함수 이식
+    // 기존 로직 유지: 학과 설명에서 태그 추출
     private List<String> extractTags(List<String> descriptions) {
         Map<String, List<String>> keywordMap = new HashMap<>();
         keywordMap.put("교사", List.of("교육", "교직"));
@@ -186,7 +153,7 @@ public class DataLoader implements CommandLineRunner {
         return new ArrayList<>(tags);
     }
 
-    // Python의 infer_category 함수 이식
+    // 기존 로직 유지: 학과 이름으로 카테고리 추론
     private String inferCategory(String name) {
         if (containsAny(name, "공학", "컴퓨터", "전기", "기계", "건축", "토목", "화학", "소재", "신소재", "데이터", "인공지능", "소프트웨어")) return "이공계";
         if (containsAny(name, "경영", "경제", "금융", "회계", "무역", "부동산", "물류", "IT금융", "창업")) return "경상계";

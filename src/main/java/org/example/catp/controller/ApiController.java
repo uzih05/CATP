@@ -28,23 +28,25 @@ public class ApiController {
     private final CareerService careerService;
     private final ObjectMapper objectMapper;
 
-    // 1. 질문 목록 조회 API
     @GetMapping("/questions")
     public Map<String, Object> getQuestions() {
         List<Question> questions = questionRepository.findAllByOrderByQuestionOrderAsc();
         return Map.of("questions", questions, "total", questions.size());
     }
 
-    // 2. 검사 결과 제출 및 분석 API
     @PostMapping("/results")
     public ResponseEntity<Map<String, Object>> submitTest(@RequestBody Map<String, List<Integer>> payload) {
         try {
             List<Integer> answers = payload.get("answers");
-            if (answers == null || answers.size() != 20) {
-                return ResponseEntity.badRequest().body(Map.of("error", "답변은 20개여야 합니다."));
+
+            // ✅ [핵심 수정] 하드코딩된 20 제거 -> DB의 실제 질문 개수와 비교
+            long totalQuestions = questionRepository.count();
+
+            if (answers == null || answers.size() != totalQuestions) {
+                return ResponseEntity.badRequest().body(Map.of("error", "답변 개수가 질문 개수(" + totalQuestions + "개)와 일치하지 않습니다."));
             }
 
-            // 서비스 로직 실행 (점수 계산 및 학과 매칭)
+            // 서비스 로직 실행
             Map<String, Object> analysisResult = careerService.analyzeTest(answers);
 
             // 결과 저장 (Entity 생성)
@@ -69,7 +71,6 @@ public class ApiController {
 
             testResultRepository.save(testResult);
 
-            // 응답 데이터 구성
             Map<String, Object> response = new HashMap<>(analysisResult);
             response.put("id", resultId);
 
@@ -81,8 +82,7 @@ public class ApiController {
         }
     }
 
-    // 3. 결과 조회 API (공유 링크용)
-    // [수정됨] 반환 타입을 ResponseEntity<?>로 변경하여 404 응답(Void)과 성공 응답(Map)을 모두 수용
+    // ... (getResult 메서드는 기존 유지) ...
     @GetMapping("/results/{id}")
     public ResponseEntity<?> getResult(@PathVariable String id) {
         return testResultRepository.findById(id)
@@ -98,6 +98,7 @@ public class ApiController {
                         response.put("top_departments", objectMapper.readValue(result.getTopDepartments(), new TypeReference<List<Map<String, Object>>>(){}));
                         response.put("worst_departments", objectMapper.readValue(result.getWorstDepartments(), new TypeReference<List<Map<String, Object>>>(){}));
 
+                        // similar_departments null 체크
                         if (result.getSimilarDepartments() != null) {
                             response.put("similar_departments", objectMapper.readValue(result.getSimilarDepartments(), new TypeReference<List<Map<String, Object>>>(){}));
                         } else {
@@ -111,7 +112,6 @@ public class ApiController {
                         return ResponseEntity.ok(response);
                     } catch (Exception e) {
                         log.error("데이터 파싱 오류", e);
-                        // 에러 발생 시 에러 메시지 맵 반환
                         return ResponseEntity.internalServerError().body((Object) Map.of("error", "데이터 처리 중 오류가 발생했습니다."));
                     }
                 })

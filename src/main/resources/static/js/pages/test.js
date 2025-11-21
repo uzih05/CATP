@@ -1,12 +1,12 @@
 // frontend/js/pages/test.js
 
 const API_BASE_URL = '';
-const QUESTIONS_PER_PAGE = 10;
+const QUESTIONS_PER_PAGE = 10; // 페이지당 질문 수는 유지
 
 // State
 let questions = [];
-let answers = new Array(20).fill(null);
-let currentPage = 0; // 0: 1~10번, 1: 11~20번
+let answers = [];
+let currentPage = 0;
 
 // DOM Elements
 const questionsList = document.getElementById('questionsList');
@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Load questions from API
 async function loadQuestions() {
     try {
-        // 로딩 표시 (화면 중앙 스피너가 아닌, 리스트에 로딩 텍스트 표시 등)
         questionsList.innerHTML = '<div style="text-align:center; color:white; font-size:1.2rem;">질문을 불러오는 중...</div>';
 
         const response = await fetch(`${API_BASE_URL}/api/questions`);
@@ -34,10 +33,14 @@ async function loadQuestions() {
         const data = await response.json();
         questions = data.questions;
 
-        // 만약 백엔드 연결이 안되면 테스트용 더미 데이터 (개발용)
         if (!questions || questions.length === 0) {
             throw new Error('No Data');
         }
+
+        // 이제 질문이 50개가 되어도 알아서 50칸짜리 배열이 만들어집니다.
+        answers = new Array(questions.length).fill(null);
+        console.log(`총 ${questions.length}개의 질문이 로드되었습니다.`);
+
     } catch (error) {
         console.error('질문 로드 실패:', error);
         alert('서버 연결에 실패했습니다. 백엔드를 실행해주세요.');
