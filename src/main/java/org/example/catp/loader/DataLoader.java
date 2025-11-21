@@ -102,13 +102,24 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
-    // 기존 로직 유지: 학과 설명에서 태그 추출
+    // [수정됨] 학과 설명에서 태그 추출 로직 강화 (컴퓨터공학 등 누락된 키워드 추가)
     private List<String> extractTags(List<String> descriptions) {
         Map<String, List<String>> keywordMap = new HashMap<>();
+
+        // 기존 키워드
         keywordMap.put("교사", List.of("교육", "교직"));
         keywordMap.put("교수", List.of("교육", "학문"));
         keywordMap.put("의사", List.of("의료", "건강"));
         keywordMap.put("간호", List.of("의료", "간호", "돌봄"));
+
+        // [추가됨] 컴퓨터공학과 및 논리/분석 관련 키워드 대폭 보강
+        keywordMap.put("논리", List.of("논리", "분석", "수학"));
+        keywordMap.put("분석", List.of("분석", "데이터", "논리"));
+        keywordMap.put("소프트웨어", List.of("IT", "코딩", "컴퓨터"));
+        keywordMap.put("하드웨어", List.of("기계", "전자", "컴퓨터"));
+        keywordMap.put("프로그래밍", List.of("코딩", "IT", "개발"));
+
+        // 기존 키워드 계속
         keywordMap.put("컴퓨터", List.of("IT", "컴퓨터", "기술"));
         keywordMap.put("프로그램", List.of("IT", "코딩", "프로그래밍"));
         keywordMap.put("코딩", List.of("IT", "코딩", "프로그래밍"));
