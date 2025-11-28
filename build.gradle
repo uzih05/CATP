@@ -26,7 +26,6 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 
     // 3. JSON 처리 (오류 해결의 핵심!)
-    // 이 부분이 없거나 버전 충돌로 인해 빨간줄 에러가 떴던 것입니다.
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.fasterxml.jackson.core:jackson-core'
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
