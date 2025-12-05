@@ -15,6 +15,13 @@ const APTITUDE_NAMES = [
     '문제해결능력'
 ];
 
+// 점수대별 등급 분류
+function getGrade(percentage) {
+    if (percentage >= 80) return { grade: 'excellent', label: '최적' };
+    if (percentage >= 60) return { grade: 'good', label: '적합' };
+    return { grade: 'potential', label: '관심요망' };
+}
+
 // State
 let resultData = null;
 let radarChart = null;
@@ -34,7 +41,6 @@ const similarSummaryText = document.getElementById('similarSummary');
 const shareUrl = document.getElementById('shareUrl');
 const copyBtn = document.getElementById('copyBtn');
 const shareMessage = document.getElementById('shareMessage');
-// 🆕 추가
 const interestTagsSection = document.getElementById('interestTagsSection');
 const interestTagsContainer = document.getElementById('interestTagsContainer');
 
@@ -66,7 +72,6 @@ function getResultIdFromUrl() {
 async function loadResult(resultId) {
     try {
         console.log('🔄 결과 로딩 시작:', resultId);
-        console.log('📡 API URL:', `${API_BASE_URL}/api/results/${resultId}`);
 
         const response = await fetch(`${API_BASE_URL}/api/results/${resultId}`);
 
@@ -86,14 +91,12 @@ async function loadResult(resultId) {
     } catch (error) {
         console.error('❌ 결과 로드 실패:', error);
 
-        // 백엔드 서버 확인
         if (error.message.includes('Failed to fetch')) {
-            alert('⚠️ 백엔드 서버에 연결할 수 없습니다.\n\n다음을 확인해주세요:\n1. backend 폴더에서 "python main.py" 실행\n2. http://localhost:8000이 열려있는지 확인');
+            alert('⚠️ 백엔드 서버에 연결할 수 없습니다.\n\n서버가 실행 중인지 확인해주세요.');
         } else {
             alert(`결과를 불러오는데 실패했습니다.\n\n에러: ${error.message}\n\n검사를 다시 시도해주세요.`);
         }
 
-        // 5초 후 검사 페이지로 이동
         setTimeout(() => {
             window.location.href = 'test.html';
         }, 5000);
@@ -104,11 +107,11 @@ async function loadResult(resultId) {
 function renderResult() {
     renderPersonality();
     renderSummary();
-    renderInterestTags(); // 🆕 추가
+    renderInterestTags();
     renderRadarChart();
     renderTopDepartments();
-    renderWorstDepartments();
     renderSimilarDepartments();
+    renderWorstDepartments();
     renderShareUrl();
 }
 
@@ -121,22 +124,34 @@ function renderPersonality() {
 function renderSummary() {
     const summary = resultData.summary;
 
-    personalitySummary.textContent = summary.personality || '';
-    strengthSummary.textContent = summary.strength || '';
+    if (summary) {
+        personalitySummary.textContent = summary.personality || '';
+        strengthSummary.textContent = summary.strength || '';
 
-    if (summary.interest) {
-        interestSummary.textContent = summary.interest;
-        interestSummary.style.display = 'block';
+        if (summary.interest) {
+            interestSummary.textContent = summary.interest;
+            interestSummary.style.display = 'block';
+        } else {
+            interestSummary.style.display = 'none';
+        }
+
+        // topDepartmentSummary 업데이트
+        if (summary.top_department) {
+            topDepartmentSummary.textContent = summary.top_department;
+        }
     } else {
+        // summary가 없는 경우 기본값
+        personalitySummary.textContent = resultData.personality + ' 유형입니다.';
+        strengthSummary.textContent = '';
         interestSummary.style.display = 'none';
     }
 }
 
-// 🆕 Render interest tags
+// Render interest tags
 function renderInterestTags() {
     const tags = resultData.interest_tags;
 
-    console.log('🏷️ Interest Tags:', tags); // 디버깅용
+    console.log('🏷️ Interest Tags:', tags);
 
     if (!tags || tags.length === 0) {
         console.log('⚠️ 관심사 태그가 없습니다');
@@ -163,12 +178,10 @@ function renderInterestTags() {
 function renderRadarChart() {
     const ctx = document.getElementById('radarChart').getContext('2d');
 
-    // Destroy existing chart
     if (radarChart) {
         radarChart.destroy();
     }
 
-    // Chart data
     const scores = resultData.scores;
 
     radarChart = new Chart(ctx, {
@@ -196,22 +209,15 @@ function renderRadarChart() {
                     max: 5,
                     ticks: {
                         stepSize: 1,
-                        font: {
-                            size: 12
-                        }
+                        font: { size: 12 }
                     },
                     pointLabels: {
-                        font: {
-                            size: 13,
-                            weight: '600'
-                        }
+                        font: { size: 13, weight: '600' }
                     }
                 }
             },
             plugins: {
-                legend: {
-                    display: false
-                },
+                legend: { display: false },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
@@ -223,7 +229,6 @@ function renderRadarChart() {
         }
     });
 
-    // Render legend
     renderAptitudeLegend(scores);
 }
 
@@ -231,7 +236,6 @@ function renderRadarChart() {
 function renderAptitudeLegend(scores) {
     aptitudeLegend.innerHTML = '';
 
-    // Create color palette
     const colors = [
         '#667eea', '#764ba2', '#f093fb', '#4facfe',
         '#43e97b', '#fa709a', '#fee140', '#30cfd0',
@@ -261,34 +265,69 @@ function renderTopDepartments() {
         return;
     }
 
-    // Update summary text (1순위 학과 맞춤 문구)
-    const topDept = tops[0];
-    topDepartmentSummary.textContent = `${topDept.department.name}가 ${topDept.match_percentage}% 일치하며, ${topDept.reason}`;
-
-    // Render cards
     topDepartments.innerHTML = '';
+
+    const medals = ['🥇', '🥈', '🥉'];
 
     tops.forEach((dept, index) => {
         const card = document.createElement('div');
-        card.className = 'department-card';
+        const gradeInfo = getGrade(dept.match_percentage);
+        card.className = `department-card ${gradeInfo.grade}`;
         card.style.animationDelay = `${index * 0.1}s`;
-
-        const medals = ['🥇', '🥈', '🥉'];
 
         card.innerHTML = `
             <div class="department-rank">${medals[index] || (index + 1)}</div>
             <h3 class="department-name">${dept.department.name}</h3>
             <div class="department-match">
-                <span class="match-percentage">${dept.match_percentage}%</span>
+                <span class="match-percentage ${gradeInfo.grade}">${dept.match_percentage}%</span>
                 <span class="match-label">일치</span>
+                <span class="match-grade ${gradeInfo.grade}">${gradeInfo.label}</span>
             </div>
             <p class="department-reason">${dept.reason}</p>
-            <a href="${dept.department.url}" target="_blank" class="department-link">
+            <a href="${dept.department.url}" target="_blank" rel="noopener noreferrer" class="department-link">
                 학과 자세히 보기 →
             </a>
         `;
 
         topDepartments.appendChild(card);
+    });
+}
+
+// Render similar departments
+function renderSimilarDepartments() {
+    const similars = resultData.similar_departments;
+
+    if (!similars || similars.length === 0) {
+        similarSection.style.display = 'none';
+        return;
+    }
+
+    similarSection.style.display = 'block';
+
+    const deptNames = similars.map(s => s.department.name);
+    similarSummaryText.textContent = `관심 분야가 일치하는 학과: ${deptNames.join(', ')}`;
+
+    similarDepartments.innerHTML = '';
+
+    similars.forEach((dept, index) => {
+        const card = document.createElement('div');
+        card.className = 'similar-card';
+        card.style.animationDelay = `${index * 0.1}s`;
+
+        const tagsHtml = dept.common_tags
+            ? dept.common_tags.map(tag => `<span class="tag">${tag}</span>`).join('')
+            : '';
+
+        card.innerHTML = `
+            <h4 class="similar-name">${dept.department.name}</h4>
+            <div class="similar-match">${dept.match_percentage}% 일치</div>
+            <div class="similar-tags">${tagsHtml}</div>
+            <a href="${dept.department.url}" target="_blank" rel="noopener noreferrer" class="department-link">
+                학과 보기 →
+            </a>
+        `;
+
+        similarDepartments.appendChild(card);
     });
 }
 
@@ -308,57 +347,16 @@ function renderWorstDepartments() {
         card.className = 'worst-card';
         card.style.animationDelay = `${index * 0.1}s`;
 
+        // mismatch_reason 필드 사용 (없으면 기본 메시지)
+        const reason = dept.mismatch_reason || '적성이 맞지 않을 수 있습니다.';
+
         card.innerHTML = `
             <h4 class="worst-name">${dept.department.name}</h4>
             <div class="worst-percentage">${dept.match_percentage}% 일치</div>
-            <p class="worst-reason">
-                ${dept.mismatch_reason || '적성이 맞지 않을 수 있습니다.'}
-            </p>
+            <p class="worst-reason">${reason}</p>
         `;
 
         worstDepartments.appendChild(card);
-    });
-}
-
-// Render similar departments
-function renderSimilarDepartments() {
-    const similars = resultData.similar_departments;
-
-    if (!similars || similars.length === 0) {
-        similarSection.style.display = 'none';
-        return;
-    }
-
-    similarSection.style.display = 'block';
-
-    // Update summary
-    const deptNames = similars.map(s => s.department.name);
-    if (deptNames.length === 1) {
-        similarSummaryText.textContent = `함께 고려해볼 학과: ${deptNames[0]}`;
-    } else {
-        similarSummaryText.textContent = `함께 고려해볼 학과: ${deptNames.join(', ')}`;
-    }
-
-    similarDepartments.innerHTML = '';
-
-    similars.forEach((dept, index) => {
-        const card = document.createElement('div');
-        card.className = 'similar-card';
-        card.style.animationDelay = `${index * 0.1}s`;
-
-        const tagsHtml = dept.common_tags
-            ? dept.common_tags.map(tag => `<span class="tag">${tag}</span>`).join('')
-            : '';
-
-        card.innerHTML = `
-            <h4 class="similar-name">${dept.department.name}</h4>
-            <div class="similar-tags">${tagsHtml}</div>
-            <a href="${dept.department.url}" target="_blank" class="department-link">
-                학과 보기 →
-            </a>
-        `;
-
-        similarDepartments.appendChild(card);
     });
 }
 
@@ -374,7 +372,6 @@ function setupShareButton() {
         try {
             await navigator.clipboard.writeText(shareUrl.value);
 
-            // Show success message
             shareMessage.style.display = 'block';
             copyBtn.textContent = '✅ 복사 완료!';
 
@@ -386,7 +383,6 @@ function setupShareButton() {
         } catch (error) {
             console.error('복사 실패:', error);
 
-            // Fallback: select text
             shareUrl.select();
             document.execCommand('copy');
 
