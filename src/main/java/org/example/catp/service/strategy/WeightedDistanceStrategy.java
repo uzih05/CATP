@@ -4,11 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catp.entity.AptitudeType;
 import org.example.catp.entity.Department;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.example.catp.entity.AptitudeType.*;
 
 @Slf4j
 @Component
@@ -17,14 +20,37 @@ public class WeightedDistanceStrategy implements RecommendationStrategy {
 
     private final ObjectMapper objectMapper;
 
-    // 계열별 중요 역량 인덱스 (0:언어, 1:논리, 2:창의, 3:사회, 4:리더, 5:신체, 6:예술, 7:꼼꼼, 8:탐구, 9:문제해결)
-    private static final Map<String, List<Integer>> CATEGORY_WEIGHTS = Map.of(
-            "이공계", List.of(1, 8, 9),       // 논리, 탐구, 문제해결 중요
-            "인문계", List.of(0, 3, 8),       // 언어, 사회성, 탐구 중요
-            "경상계", List.of(1, 4, 7),       // 논리, 리더십, 꼼꼼함 중요
-            "예체능", List.of(2, 6, 5),       // 창의, 예술, 신체 중요
-            "보건의료", List.of(3, 7, 9),      // 사회성, 꼼꼼함, 문제해결 중요
-            "교육계", List.of(0, 3, 4)        // 언어, 사회성, 리더십 중요
+    // ========== 상수 정의 ==========
+    
+    /** 적성 점수 배점 (100점 만점 중) */
+    private static final double APTITUDE_MAX_SCORE = 70.0;
+    
+    /** 흥미 태그 배점 (100점 만점 중) */
+    private static final double INTEREST_MAX_SCORE = 30.0;
+    
+    /** 태그 1개당 보너스 점수 */
+    private static final double TAG_BONUS_PER_MATCH = 10.0;
+    
+    /** 과락 기준: 학과 요구 점수 */
+    private static final int CRITICAL_DEPT_THRESHOLD = 8;
+    
+    /** 과락 기준: 사용자 점수 (10점 만점 환산) */
+    private static final double CRITICAL_USER_THRESHOLD = 5.0;
+
+    // ========== 계열별 중요 역량 ==========
+    
+    private static final Map<String, List<AptitudeType>> CATEGORY_WEIGHTS = Map.ofEntries(
+            Map.entry("이공계", List.of(LOGIC, INQUIRY, PROBLEM_SOLVING)),
+            Map.entry("인문계", List.of(LANGUAGE, SOCIAL, INQUIRY)),
+            Map.entry("경상계", List.of(LOGIC, LEADERSHIP, SYSTEMATIC)),
+            Map.entry("예체능", List.of(CREATIVITY, ARTISTIC, PHYSICAL)),
+            Map.entry("보건의료", List.of(SOCIAL, SYSTEMATIC, PROBLEM_SOLVING)),
+            Map.entry("교육계", List.of(LANGUAGE, SOCIAL, LEADERSHIP)),
+            Map.entry("사회과학", List.of(LOGIC, SOCIAL, SYSTEMATIC)),
+            Map.entry("관광·서비스", List.of(SOCIAL, LANGUAGE, CREATIVITY)),
+            Map.entry("안전·기술", List.of(PHYSICAL, SYSTEMATIC, PROBLEM_SOLVING)),
+            Map.entry("융합·미래", List.of(CREATIVITY, LOGIC, LEADERSHIP)),
+            Map.entry("기타", List.of(LOGIC, SOCIAL, PROBLEM_SOLVING))
     );
 
     @Override
@@ -33,25 +59,25 @@ public class WeightedDistanceStrategy implements RecommendationStrategy {
 
         for (Department dept : departments) {
             try {
-                // 학과 데이터 파싱
                 List<Integer> deptScores = objectMapper.readValue(dept.getAptitudeScores(), new TypeReference<>() {});
                 List<String> deptTags = objectMapper.readValue(dept.getTags(), new TypeReference<>() {});
 
-                // 1. 적합도 점수 계산 (Weighted Distance Algorithm)
-                double finalScore = calculateMatchScore(userScores, deptScores, dept.getCategory(), userTags, deptTags);
+                MatchResult matchResult = calculateMatchScore(userScores, deptScores, dept.getCategory(), userTags, deptTags);
 
-                // 2. 결과 맵핑
                 Map<String, Object> map = new HashMap<>();
                 map.put("department", dept);
-                map.put("match_percentage", Math.round(finalScore * 10) / 10.0);
+                map.put("match_percentage", Math.round(matchResult.score * 10) / 10.0);
+                map.put("reason", matchResult.reason);
+                
+                if (matchResult.hasCriticalFail) {
+                    map.put("mismatch_reason", matchResult.criticalFailReason);
+                }
 
-                // 태그 매칭 개수 계산 (사유 생성용)
-                long matchingTagCount = userTags.stream().filter(deptTags::contains).count();
-                map.put("reason", generateReason(matchingTagCount, dept.getCategory()));
-
-                // 공통 태그 정보
-                if (matchingTagCount > 0) {
-                    map.put("common_tags", userTags.stream().filter(deptTags::contains).collect(Collectors.toList()));
+                if (matchResult.matchingTagCount > 0) {
+                    map.put("common_tags", userTags.stream()
+                            .filter(deptTags::contains)
+                            .limit(5) // 공통 태그도 최대 5개만
+                            .collect(Collectors.toList()));
                 }
 
                 results.add(map);
@@ -61,55 +87,207 @@ public class WeightedDistanceStrategy implements RecommendationStrategy {
             }
         }
 
-        // 점수 높은 순 정렬
-        results.sort((a, b) -> Double.compare((Double) b.get("match_percentage"), (Double) a.get("match_percentage")));
+        results.sort((a, b) -> Double.compare(
+                (Double) b.get("match_percentage"), 
+                (Double) a.get("match_percentage")
+        ));
+        
         return results;
     }
 
-    private double calculateMatchScore(List<Double> userScores, List<Integer> deptScores, String category, Set<String> userTags, List<String> deptTags) {
-        double totalPenalty = 0;
-
-        // 해당 계열의 중요 역량 인덱스 가져오기 (없으면 빈 리스트)
-        List<Integer> importantIndices = CATEGORY_WEIGHTS.getOrDefault(category, Collections.emptyList());
-
+    /**
+     * Cosine Similarity 기반 매칭 점수 계산
+     */
+    private MatchResult calculateMatchScore(
+            List<Double> userScores, 
+            List<Integer> deptScores, 
+            String category,
+            Set<String> userTags, 
+            List<String> deptTags
+    ) {
+        // 1. 사용자 점수를 10점 만점으로 환산
+        double[] userVector = new double[10];
+        double[] deptVector = new double[10];
+        
         for (int i = 0; i < 10; i++) {
-            double userVal = userScores.get(i) * 2; // 10점 만점 환산
-            double deptVal = deptScores.get(i);
-            double diff = Math.abs(userVal - deptVal);
-
-            // [가중치 로직]
-            // 1. 학과에서 요구하는 핵심 역량(7점 이상)인데 사용자가 부족하면 -> 페널티 1.5배
-            // 2. 계열별 중요 역량(importantIndices)인 경우 -> 페널티 1.2배 추가 강화
-            double weight = 1.0;
-
-            if (deptVal >= 7) {
-                weight += 0.5;
-            }
-            if (importantIndices.contains(i)) {
-                weight += 0.2;
-            }
-
-            // 3. 반대로 학과에서 중요하지 않은 역량(4점 이하)은 차이가 나도 관대하게 처리 -> 페널티 0.7배
-            if (deptVal <= 4) {
-                weight *= 0.7;
-            }
-
-            totalPenalty += diff * weight;
+            userVector[i] = userScores.get(i) * 2; // 5점 → 10점 만점
+            deptVector[i] = deptScores.get(i);
         }
 
-        // 기본 점수 (100점 만점 기준, 페널티 차감 방식)
-        double baseScore = Math.max(0, 100 - (totalPenalty * 1.1));
+        // 2. 과락 체크
+        boolean hasCriticalFail = false;
+        String criticalFailReason = null;
+        List<String> weakPoints = new ArrayList<>();
+        
+        for (int i = 0; i < 10; i++) {
+            if (deptVector[i] >= CRITICAL_DEPT_THRESHOLD && userVector[i] < CRITICAL_USER_THRESHOLD) {
+                hasCriticalFail = true;
+                AptitudeType aptitude = AptitudeType.fromIndex(i);
+                criticalFailReason = String.format(
+                        "%s 역량이 부족합니다 (요구: %.0f점, 보유: %.1f점)",
+                        aptitude.getDisplayName(), deptVector[i], userVector[i]
+                );
+                weakPoints.add(aptitude.getDisplayName());
+            }
+        }
 
-        // [태그 보너스] 관심사 일치 시 보너스 점수 (최대 15점)
-        long matchCount = userTags.stream().filter(deptTags::contains).count();
-        double tagBonus = Math.min(15, matchCount * 5);
+        // 3. Cosine Similarity 계산
+        double cosineSimilarity = calculateCosineSimilarity(userVector, deptVector);
+        
+        // 4. 가중치 적용된 Cosine Similarity (계열별 중요 역량 반영)
+        double weightedSimilarity = calculateWeightedCosineSimilarity(userVector, deptVector, category);
+        
+        // 5. 두 유사도의 조합 (기본 70% + 가중치 30%)
+        double combinedSimilarity = (cosineSimilarity * 0.7) + (weightedSimilarity * 0.3);
+        
+        // 6. 적성 점수 (70점 만점)
+        double aptitudeScore = combinedSimilarity * APTITUDE_MAX_SCORE;
+        
+        // 과락 시 감점
+        if (hasCriticalFail) {
+            aptitudeScore *= 0.6;
+        }
 
-        return Math.min(100, baseScore + tagBonus);
+        // 7. 흥미 점수 (30점 만점)
+        long matchingTagCount = userTags.stream().filter(deptTags::contains).count();
+        double interestScore = Math.min(INTEREST_MAX_SCORE, matchingTagCount * TAG_BONUS_PER_MATCH);
+
+        // 8. 최종 점수
+        double finalScore = aptitudeScore + interestScore;
+
+        // 9. 강점 분석
+        List<String> strongPoints = findStrongPoints(userVector, deptVector);
+
+        // 10. 추천 사유 생성
+        String reason = generateReason(matchingTagCount, category, strongPoints, hasCriticalFail, cosineSimilarity);
+
+        return new MatchResult(finalScore, reason, hasCriticalFail, criticalFailReason, matchingTagCount);
     }
 
-    private String generateReason(long tagMatchCount, String category) {
-        if (tagMatchCount >= 2) return "관심 분야가 잘 맞고, " + category + " 적성이 우수합니다.";
-        if (tagMatchCount == 1) return "관심사가 일부 일치하며 적성이 부합합니다.";
-        return category + " 계열로서 전반적인 적성 유형이 잘 맞습니다.";
+    /**
+     * Cosine Similarity 계산
+     * 결과: 0.0 ~ 1.0 (1에 가까울수록 유사)
+     */
+    private double calculateCosineSimilarity(double[] vectorA, double[] vectorB) {
+        double dotProduct = 0.0;
+        double magnitudeA = 0.0;
+        double magnitudeB = 0.0;
+
+        for (int i = 0; i < vectorA.length; i++) {
+            dotProduct += vectorA[i] * vectorB[i];
+            magnitudeA += vectorA[i] * vectorA[i];
+            magnitudeB += vectorB[i] * vectorB[i];
+        }
+
+        magnitudeA = Math.sqrt(magnitudeA);
+        magnitudeB = Math.sqrt(magnitudeB);
+
+        if (magnitudeA == 0 || magnitudeB == 0) {
+            return 0.0;
+        }
+
+        return dotProduct / (magnitudeA * magnitudeB);
+    }
+
+    /**
+     * 계열별 중요 역량에 가중치를 적용한 Cosine Similarity
+     */
+    private double calculateWeightedCosineSimilarity(double[] userVector, double[] deptVector, String category) {
+        List<AptitudeType> importantTypes = CATEGORY_WEIGHTS.getOrDefault(category, Collections.emptyList());
+        Set<Integer> importantIndices = importantTypes.stream()
+                .map(AptitudeType::getIndex)
+                .collect(Collectors.toSet());
+
+        double[] weightedUser = new double[10];
+        double[] weightedDept = new double[10];
+
+        for (int i = 0; i < 10; i++) {
+            double weight = importantIndices.contains(i) ? 1.5 : 1.0;
+            weightedUser[i] = userVector[i] * weight;
+            weightedDept[i] = deptVector[i] * weight;
+        }
+
+        return calculateCosineSimilarity(weightedUser, weightedDept);
+    }
+
+    /**
+     * 사용자가 학과 요구치 이상인 강점 역량 찾기
+     */
+    private List<String> findStrongPoints(double[] userVector, double[] deptVector) {
+        List<String> strongPoints = new ArrayList<>();
+        
+        for (int i = 0; i < 10; i++) {
+            // 학과가 7점 이상 요구하고, 사용자가 그 이상인 경우
+            if (deptVector[i] >= 7 && userVector[i] >= deptVector[i]) {
+                strongPoints.add(AptitudeType.fromIndex(i).getDisplayName());
+            }
+        }
+        
+        return strongPoints;
+    }
+
+    /**
+     * 추천 사유 생성
+     */
+    private String generateReason(long tagMatchCount, String category, List<String> strongPoints, 
+                                   boolean hasCriticalFail, double similarity) {
+        
+        if (hasCriticalFail) {
+            return category + " 계열이지만, 일부 핵심 역량 보완이 필요합니다.";
+        }
+
+        // 높은 유사도 + 태그 매칭
+        if (similarity >= 0.95 && tagMatchCount >= 2) {
+            return "관심 분야와 적성이 모두 뛰어나게 일치합니다!";
+        }
+
+        // 강점이 있고 태그도 맞음
+        if (strongPoints.size() >= 2 && tagMatchCount >= 2) {
+            String strengths = String.join(", ", strongPoints.subList(0, Math.min(2, strongPoints.size())));
+            return "관심 분야가 잘 맞고, " + strengths + " 역량이 뛰어납니다.";
+        }
+
+        // 강점만 있음
+        if (strongPoints.size() >= 2) {
+            String strengths = String.join(", ", strongPoints.subList(0, Math.min(2, strongPoints.size())));
+            return strengths + " 등 핵심 역량을 갖추고 있습니다.";
+        }
+
+        // 태그만 맞음
+        if (tagMatchCount >= 2) {
+            return "관심 분야가 잘 맞고, " + category + " 적성이 우수합니다.";
+        }
+
+        if (tagMatchCount == 1) {
+            return "관심사가 일부 일치하며 적성이 부합합니다.";
+        }
+
+        // 유사도 기반 기본 메시지
+        if (similarity >= 0.9) {
+            return category + " 계열로서 적성이 매우 잘 맞습니다.";
+        } else if (similarity >= 0.8) {
+            return category + " 계열로서 전반적인 적성 유형이 잘 맞습니다.";
+        }
+        
+        return category + " 계열과 적성이 어느 정도 부합합니다.";
+    }
+
+    /**
+     * 매칭 결과 내부 클래스
+     */
+    private static class MatchResult {
+        final double score;
+        final String reason;
+        final boolean hasCriticalFail;
+        final String criticalFailReason;
+        final long matchingTagCount;
+
+        MatchResult(double score, String reason, boolean hasCriticalFail, String criticalFailReason, long matchingTagCount) {
+            this.score = score;
+            this.reason = reason;
+            this.hasCriticalFail = hasCriticalFail;
+            this.criticalFailReason = criticalFailReason;
+            this.matchingTagCount = matchingTagCount;
+        }
     }
 }
