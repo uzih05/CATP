@@ -87,6 +87,74 @@
     margin-bottom: var(--spacing-md);
 }
 
+/* ========== Interest Tags Section (수정됨 - 미디어쿼리 밖으로 이동) ========== */
+.interest-tags-section {
+    padding: var(--spacing-2xl) var(--spacing-xl);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.interest-tags-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.interest-tags-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: var(--spacing-lg);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.interest-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    justify-content: center;
+    padding: var(--spacing-xl);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-2xl);
+}
+
+.interest-tag {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.95),
+        rgba(255, 255, 255, 0.85));
+    color: #f5576c;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-full);
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all var(--transition-base);
+    animation: fadeInScale 0.5s ease;
+    cursor: default;
+}
+
+.interest-tag:nth-child(odd) {
+    background: linear-gradient(135deg, #fff, #ffe8f0);
+}
+
+.interest-tag:nth-child(even) {
+    background: linear-gradient(135deg, #fff, #fff0e8);
+}
+
+.interest-tag:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Empty state */
+.no-tags-message {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.125rem;
+    padding: var(--spacing-xl);
+}
+
 /* Chart Section */
 .chart-section {
     padding: var(--spacing-3xl) var(--spacing-xl);
@@ -403,7 +471,18 @@
     }
 }
 
-/* Responsive */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========== Responsive ========== */
 @media (max-width: 768px) {
     .result-title {
         font-size: 2rem;
@@ -438,82 +517,13 @@
         width: 100%;
     }
 
-    /* Interest Tags Section */
-    .interest-tags-section {
-        padding: var(--spacing-2xl) var(--spacing-xl);
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    }
-
-    .interest-tags-wrapper {
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: center;
-    }
-
+    /* Interest Tags 모바일 대응 */
     .interest-tags-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: white;
-        margin-bottom: var(--spacing-lg);
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .interest-tags-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--spacing-md);
-        justify-content: center;
-        padding: var(--spacing-xl);
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(20px);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: var(--radius-2xl);
+        font-size: 1.5rem;
     }
 
     .interest-tag {
-        padding: var(--spacing-sm) var(--spacing-lg);
-        background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.95),
-            rgba(255, 255, 255, 0.85));
-        color: #f5576c;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        border-radius: var(--radius-full);
-        font-size: 1rem;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transition: all var(--transition-base);
-        animation: fadeInScale 0.5s ease;
-        cursor: default;
-    }
-
-    .interest-tag:nth-child(odd) {
-        background: linear-gradient(135deg, #fff, #ffe8f0);
-    }
-
-    .interest-tag:nth-child(even) {
-        background: linear-gradient(135deg, #fff, #fff0e8);
-    }
-
-    .interest-tag:hover {
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    }
-
-    @keyframes fadeInScale {
-        from {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    /* Empty state */
-    .no-tags-message {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.125rem;
-        padding: var(--spacing-xl);
+        font-size: 0.875rem;
+        padding: var(--spacing-xs) var(--spacing-md);
     }
 }
