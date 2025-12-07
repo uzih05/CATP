@@ -3,196 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="전주대학교 전공 유형 검사 - 나에게 맞는 전공을 찾아보세요">
-    <title>전공 유형 검사 | 전주대학교</title>
+    <meta name="description" content="전주대학교 학과유형검사 - 나에게 맞는 학과를 찾아보세요">
+    <meta name="theme-color" content="#4f46e5">
+    <title>전주대학교 학과유형검사</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/components/header.css">
-    <link rel="stylesheet" href="css/components/button.css">
-    <link rel="stylesheet" href="css/pages/main.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/start.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header" id="header">
-        <div class="header-container">
-            <a href="index.html" class="header-logo">
-                <div class="logo-icon">JJ</div>
-                <span>전공 유형 검사</span>
-            </a>
-
-            <nav class="header-nav" id="headerNav">
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="index.html" class="nav-link active">홈</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="pages/test.html" class="nav-link">검사하기</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#departments" class="nav-link">학과소개</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#about" class="nav-link">소개</a>
-                    </li>
-                </ul>
-            </nav>
-
-            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <!-- Background Video or Image -->
-        <div class="hero-background">
-            <!-- 동영상 사용 시 -->
-            <video class="hero-video" autoplay muted loop playsinline>
-                <source src="assets/videos/bg-video.mp4" type="video/mp4">
-                <!-- 동영상 로드 실패 시 이미지 표시 -->
-            </video>
-
-            <!-- 이미지 사용 시 (동영상 대신) -->
-            <!-- <img class="hero-image" src="assets/images/bg-image.jpg" alt="Background"> -->
-        </div>
-
-        <!-- Dark Overlay -->
-        <div class="hero-overlay"></div>
-
-        <!-- Hero Content -->
-        <div class="hero-content">
-            <h1 class="hero-title">
-                나에게 맞는 전공은?<br>
-                <span class="highlight">전공 유형 검사</span>
-            </h1>
-            <p class="hero-subtitle">
-                20개의 질문으로 알아보는 나의 적성과 흥미<br>
-                전주대학교 70개 학과 중 나에게 딱 맞는 전공을 찾아드립니다
-            </p>
-            <div class="hero-actions">
-                <a href="pages/test.html" class="btn btn-glass btn-lg btn-icon btn-float">
-                    검사 시작하기
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                </a>
-                <a href="#about" class="btn btn-outline btn-lg">
-                    자세히 알아보기
-                </a>
-            </div>
-        </div>
-
-        <!-- Scroll Indicator -->
-        <div class="scroll-indicator">
-            <div class="scroll-indicator-icon"></div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features-section" id="about">
-        <div class="features-container">
-            <h2 class="section-title">왜 전공 유형 검사인가요?</h2>
-            <p class="section-subtitle">
-                과학적인 분석을 통해 나에게 맞는 전공을 추천해드립니다
-            </p>
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3 class="feature-title">정확한 분석</h3>
-                    <p class="feature-description">
-                        10가지 적성 항목을 기반으로 한 정밀한 분석을 통해
-                        나의 성향을 파악합니다.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3 class="feature-title">맞춤 추천</h3>
-                    <p class="feature-description">
-                        전주대학교 70개 학과 중 나의 적성과 관심사에
-                        가장 잘 맞는 전공을 추천합니다.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3 class="feature-title">빠른 결과</h3>
-                    <p class="feature-description">
-                        약 5분의 간단한 검사로 즉시 결과를 확인하고
-                        공유할 수 있습니다.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Departments Section (추후 추가) -->
-    <section class="section" id="departments">
-        <div class="container">
-            <h2 class="section-title">학과 소개</h2>
-            <p class="section-subtitle">전주대학교의 다양한 학과를 만나보세요</p>
-            <!-- 학과 카드들이 여기에 들어갑니다 -->
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>전공 유형 검사</h3>
-                    <p style="color: var(--gray-400); margin-top: var(--spacing-md);">
-                        나에게 맞는 전공을 찾아보세요<br>
-                        전주대학교 70개 학과 정보 제공
-                    </p>
-                </div>
-
-                <div class="footer-section">
-                    <h3>바로가기</h3>
-                    <div class="footer-links">
-                        <a href="index.html" class="footer-link">홈</a>
-                        <a href="pages/test.html" class="footer-link">검사하기</a>
-                        <a href="#departments" class="footer-link">학과소개</a>
-                        <a href="#about" class="footer-link">소개</a>
+    <!-- Main Content -->
+    <main class="content">
+        <section class="start-page">
+            <div class="start-content">
+                <!-- Hero -->
+                <div class="start-hero">
+                    <!-- Logo -->
+                    <div class="start-logo fade-in-up">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                        </svg>
                     </div>
-                </div>
 
-                <div class="footer-section">
-                    <h3>정보</h3>
-                    <div class="footer-links">
-                        <a href="https://www.jj.ac.kr" class="footer-link" target="_blank" rel="noopener noreferrer">전주대학교</a>
-                        <a href="https://iphak.jj.ac.kr" class="footer-link" target="_blank" rel="noopener noreferrer">입학정보</a>
+                    <!-- Title -->
+                    <h1 class="start-title fade-in-up fade-in-delay-2">전주대학교</h1>
+
+                    <!-- Subtitle -->
+                    <div class="start-subtitle fade-in-up fade-in-delay-3">
+                        <svg class="sparkle-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+                        </svg>
+                        <h2>학과유형검사</h2>
+                        <svg class="sparkle-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+                        </svg>
                     </div>
+
+                    <!-- Description -->
+                    <p class="start-description fade-in-up fade-in-delay-4">
+                        나에게 딱 맞는 학과를 찾아보세요!<br>
+                        40개의 질문으로 여러분의 적성과 관심사를 분석하여<br>
+                        최적의 학과를 추천해드립니다.
+                    </p>
                 </div>
 
-                <div class="footer-section">
-                    <h3>문의</h3>
-                    <div class="footer-links">
-                        <p style="color: var(--gray-400);">
-                            전북특별자치도 전주시 완산구<br>
-                            천잠로 303 전주대학교<br>
-                            TEL. 1577-7177
-                        </p>
-                    </div>
+                <!-- Info Card -->
+                <div class="start-card glass-card fade-in-up fade-in-delay-5">
+                    <h3 class="card-title">검사 안내</h3>
+
+                    <ul class="info-list">
+                        <li class="info-item fade-in-up fade-in-delay-6">
+                            <div class="info-number num-1">1</div>
+                            <div class="info-text">
+                                <h4>소요 시간: 약 5-10분</h4>
+                                <p>총 40개의 질문으로 구성되어 있습니다</p>
+                            </div>
+                        </li>
+                        <li class="info-item fade-in-up fade-in-delay-6" style="animation-delay: 0.7s;">
+                            <div class="info-number num-2">2</div>
+                            <div class="info-text">
+                                <h4>솔직하게 답변해주세요</h4>
+                                <p>정답은 없습니다. 평소 생각과 가장 가까운 답을 선택하세요</p>
+                            </div>
+                        </li>
+                        <li class="info-item fade-in-up fade-in-delay-6" style="animation-delay: 0.8s;">
+                            <div class="info-number num-3">3</div>
+                            <div class="info-text">
+                                <h4>10가지 적성 분석</h4>
+                                <p>언어, 논리, 창의력, 사회성 등 10가지 영역을 분석합니다</p>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Start Button -->
+                    <a href="pages/test.html" class="start-btn">
+                        <span>검사 시작하기</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
                 </div>
-            </div>
 
-            <div class="footer-bottom">
-                <p>&copy; 2025 전주대학교 전공 유형 검사. All rights reserved.</p>
+                <!-- Footer Note -->
+                <p class="start-note fade-in-up fade-in-delay-10">
+                    이 검사는 참고용이며, 최종 학과 선택은 본인의 판단이 중요합니다
+                </p>
             </div>
-        </div>
-    </footer>
+        </section>
+    </main>
 
-    <!-- JavaScript -->
-    <script src="js/components/header.js"></script>
-    <script src="js/pages/main.js"></script>
+    <!-- Scripts -->
+    <script src="js/cherry-blossom.js"></script>
+    <script src="js/media-controller.js"></script>
 </body>
 </html>
