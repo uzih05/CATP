@@ -3,50 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>검사하기 | 전공 유형 검사</title>
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/variables.css">
-    <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/components/header.css">
-    <link rel="stylesheet" href="../css/components/button.css">
-    <link rel="stylesheet" href="../css/pages/test.css">
+    <meta name="description" content="전주대학교 학과유형검사 - 검사하기">
+    <meta name="theme-color" content="#4f46e5">
+    <title>검사하기 | 전주대학교 학과유형검사</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/test.css">
 </head>
 <body>
-    <header class="header" id="header">
-        <div class="header-container">
-            <a href="../index.html" class="header-logo">
-                <div class="logo-icon">JJ</div>
-                <span>전공 유형 검사</span>
-            </a>
-            </div>
-    </header>
+    <!-- Main Content -->
+    <main class="content">
+        <section class="test-page">
+            <div class="test-content">
+                <!-- Progress Bar -->
+                <div class="progress-container glass-card-light">
+                    <div class="progress-header">
+                        <span class="progress-text" id="progressText">질문 1 / 40</span>
+                        <span class="progress-percent" id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                </div>
 
-    <main class="test-container">
-        <div class="progress-wrapper">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-text">
-                진행률 <span id="progressPercent">0%</span>
-            </div>
-        </div>
+                <!-- Question Card -->
+                <div class="question-card glass-card" id="questionCard">
+                    <!-- 질문 내용이 JS로 렌더링됨 -->
+                    <div class="question-header">
+                        <span class="question-number">로딩 중...</span>
+                    </div>
+                    <h2 class="question-text">질문을 불러오는 중입니다...</h2>
+                    <div class="answer-options">
+                        <!-- 답변 버튼들 -->
+                    </div>
+                </div>
 
-        <div class="questions-list" id="questionsList">
+                <!-- Navigation -->
+                <div class="test-navigation">
+                    <button class="nav-btn nav-btn-prev" id="prevBtn" style="display: none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                        <span>이전 질문</span>
+                    </button>
+
+                    <button class="nav-btn nav-btn-next" id="nextBtn" disabled>
+                        <span>다음</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
-
-        <div class="test-navigation">
-            <button class="btn btn-primary btn-lg btn-block" id="nextPageBtn" style="width: 100%; max-width: 400px;">
-                다음 페이지 (1/2)
-            </button>
-        </div>
-
-        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
-            <div class="loading-spinner"></div>
-            <p class="loading-text">결과를 분석하고 있습니다...<br><span style="font-size: 0.9rem; opacity: 0.8;">잠시만 기다려주세요</span></p>
-        </div>
+        </section>
     </main>
 
-    <script src="../js/components/header.js"></script>
-    <script src="../js/pages/test.js"></script>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">결과를 분석하고 있습니다...</p>
+        <p class="loading-subtext">잠시만 기다려주세요</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/cherry-blossom.js"></script>
+    <script src="../js/media-controller.js"></script>
+    <script src="../js/test.js"></script>
 </body>
 </html>
