@@ -1,0 +1,216 @@
+/* ===================================================
+   Start Page Styles
+   =================================================== */
+
+.start-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+}
+
+.start-content {
+    max-width: 640px;
+    width: 100%;
+}
+
+/* ---------- Hero Section ---------- */
+.start-hero {
+    text-align: center;
+    margin-bottom: var(--space-12);
+}
+
+.start-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-500), var(--secondary-600));
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-6);
+    box-shadow: 0 20px 40px rgba(79, 70, 229, 0.4);
+    animation: scaleIn 0.6s ease forwards;
+}
+
+.start-logo svg {
+    width: 40px;
+    height: 40px;
+    color: white;
+}
+
+.start-title {
+    color: white;
+    margin-bottom: var(--space-4);
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.start-subtitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.start-subtitle h2 {
+    color: white;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.sparkle-icon {
+    color: var(--yellow-300);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.start-description {
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 500px;
+    margin: 0 auto;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    line-height: 1.8;
+}
+
+/* ---------- Info Card ---------- */
+.start-card {
+    padding: var(--space-8);
+    margin-bottom: var(--space-8);
+}
+
+.card-title {
+    color: var(--gray-800);
+    margin-bottom: var(--space-6);
+}
+
+/* ---------- Info List ---------- */
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+}
+
+.info-number {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-top: 2px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.info-number.num-1 {
+    background: linear-gradient(135deg, var(--primary-500), var(--secondary-600));
+}
+
+.info-number.num-2 {
+    background: linear-gradient(135deg, var(--secondary-500), var(--pink-500));
+}
+
+.info-number.num-3 {
+    background: linear-gradient(135deg, var(--pink-500), var(--rose-500));
+}
+
+.info-text h4 {
+    color: var(--gray-800);
+    margin-bottom: var(--space-1);
+}
+
+.info-text p {
+    color: var(--gray-500);
+    font-size: 0.9rem;
+}
+
+/* ---------- Start Button ---------- */
+.start-btn {
+    width: 100%;
+    padding: var(--space-5) var(--space-8);
+    background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+    transition: all var(--transition-base);
+}
+
+.start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(79, 70, 229, 0.5);
+}
+
+.start-btn:active {
+    transform: translateY(-1px);
+}
+
+.start-btn svg {
+    width: 20px;
+    height: 20px;
+    transition: transform var(--transition-base);
+}
+
+.start-btn:hover svg {
+    transform: translateX(4px);
+}
+
+/* ---------- Footer Note ---------- */
+.start-note {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+    .start-page {
+        padding: var(--space-4) var(--space-4);
+        align-items: flex-start;
+        padding-top: var(--space-8);
+    }
+
+    .start-hero {
+        margin-bottom: var(--space-8);
+    }
+
+    .start-logo {
+        width: 64px;
+        height: 64px;
+    }
+
+    .start-logo svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .start-card {
+        padding: var(--space-6);
+    }
+
+    .info-item {
+        gap: var(--space-3);
+    }
+
+    .info-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+}
