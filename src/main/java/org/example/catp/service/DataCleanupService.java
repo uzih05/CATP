@@ -26,7 +26,7 @@ public class DataCleanupService {
         // 팁: 정확히 '지난 달' 같은 날짜로 하려면 .minusMonths(1)을 써도 됩니다.
         // LocalDateTime cutoffDate = LocalDateTime.now().minusMonths(1);
 
-        log.info("🧹 데이터 정리 시작: {} 이전에 생성된(30일 지난) 데이터를 삭제합니다.", cutoffDate);
+        log.info("데이터 정리 시작: {} 이전에 생성된(30일 지난) 데이터를 삭제합니다.", cutoffDate);
 
         try {
             testResultRepository.deleteByCreatedAtBefore(cutoffDate);
