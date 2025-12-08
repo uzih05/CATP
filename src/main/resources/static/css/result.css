@@ -1,5 +1,10 @@
 /* ===================================================
+   CATP - 전주대학교 학과유형검사
    Result Page Styles
+   =================================================== */
+
+/* ===================================================
+   1. 레이아웃 및 배경 설정 (Layout & Background)
    =================================================== */
 
 .result-page {
@@ -12,7 +17,42 @@
     margin: 0 auto;
 }
 
-/* ---------- Result Header ---------- */
+/* ---------- 결과 페이지 전용 배경 설정 ---------- */
+
+/* 1. 공통으로 적용된 비디오 및 그라데이션 배경 숨기기 */
+.video-background,
+.gradient-background,
+.floating-orbs {
+    display: none !important;
+}
+
+/* 2. 결과 페이지만을 위한 배경 설정 */
+body {
+    /* 배경 이미지 경로 */
+    background-image: url('../assets/images/bg_result.jpg');
+
+    /* 배경 꽉 채우기 설정 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #f3f4f6; /* 이미지가 없을 때 보일 기본 색상 */
+}
+
+/* (선택사항) 배경이 너무 밝아서 글씨가 안 보이면 어둡게 처리 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 검은색 40% 투명도 */
+    z-index: -1; /* 내용 뒤, 배경 앞 */
+}
+
+/* ===================================================
+   2. 결과 헤더 영역 (Result Header)
+   =================================================== */
+
 .result-header {
     text-align: center;
     margin-bottom: var(--space-12);
@@ -71,7 +111,7 @@
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Color Themes */
+/* ---------- Color Themes (성향별 테마) ---------- */
 .theme-indigo .result-icon { background: var(--primary-100); }
 .theme-indigo .result-icon svg { color: var(--primary-600); }
 .theme-indigo .result-badge { background: linear-gradient(135deg, var(--primary-500), var(--secondary-600)); }
@@ -87,6 +127,10 @@
 .theme-rose .result-icon { background: #ffe4e6; }
 .theme-rose .result-icon svg { color: var(--rose-500); }
 .theme-rose .result-badge { background: linear-gradient(135deg, var(--rose-500), var(--pink-500)); }
+
+/* ===================================================
+   3. 요약 카드 및 차트 (Summary & Chart)
+   =================================================== */
 
 /* ---------- Summary Card ---------- */
 .summary-card {
@@ -185,7 +229,10 @@
     color: var(--primary-600);
 }
 
-/* ---------- Department Cards ---------- */
+/* ===================================================
+   4. 학과 추천 카드 (Departments)
+   =================================================== */
+
 .departments-section {
     margin-bottom: var(--space-6);
 }
@@ -209,6 +256,7 @@
     gap: var(--space-6);
 }
 
+/* ---------- Department Card ---------- */
 .department-card {
     position: relative;
     padding: var(--space-6);
@@ -390,7 +438,10 @@
     font-weight: 500;
 }
 
-/* ---------- Action Buttons ---------- */
+/* ===================================================
+   5. 하단 액션 및 공유 (Actions & Share)
+   =================================================== */
+
 .action-section {
     display: flex;
     flex-direction: column;
@@ -445,7 +496,7 @@
     transform: translateY(-2px);
 }
 
-/* Share Box */
+/* ---------- Share Box ---------- */
 .share-box {
     display: flex;
     gap: var(--space-2);
@@ -489,7 +540,7 @@
     margin-top: var(--space-2);
 }
 
-/* Footer Note */
+/* ---------- Footer Note ---------- */
 .result-note {
     text-align: center;
     color: rgba(255, 255, 255, 0.8);
@@ -497,7 +548,10 @@
     font-size: 0.9rem;
 }
 
-/* ---------- Responsive ---------- */
+/* ===================================================
+   6. 반응형 및 기타 설정 (Responsive & Misc)
+   =================================================== */
+
 @media (max-width: 768px) {
     .result-page {
         padding: var(--space-8) var(--space-3);
@@ -538,4 +592,11 @@
     .aptitude-legend {
         grid-template-columns: 1fr;
     }
+}
+
+/* ---------- 기타 유틸리티 ---------- */
+
+/* 결과 페이지: 미디어 컨트롤러 전체 숨김 */
+.media-controls {
+    display: none !important;
 }
