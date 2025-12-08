@@ -14,11 +14,34 @@ const ANSWER_OPTIONS = [
     { value: 5, icon: '😄', label: '매우 그렇다' }
 ];
 
+// 캐릭터 이미지 경로
+const CHARACTER_IMAGES = {
+    walk: [
+        '../assets/images/character/walk-1.png',
+        '../assets/images/character/walk-2.png',
+    ],
+    fall: '../assets/images/character/fall.png',
+    yaho: '../assets/images/character/yaho.png'
+};
+
+// 캐릭터 설정
+const CHARACTER_CONFIG = {
+    idleTimeout: 5000,      // 5초 무응답 시 넘어짐
+    yahoDisplayTime: 1000,  // 야호 표시 시간 1초
+    walkFrameRate: 200      // 걷기 프레임 전환 속도 (ms)
+};
+
 // State
 let questions = [];
 let answers = [];
 let currentIndex = 0;
 let isSubmitting = false;
+
+// 캐릭터 상태
+let characterState = 'walk';  // 'walk' | 'fall' | 'yaho'
+let idleTimer = null;
+let walkAnimationTimer = null;
+let currentWalkFrame = 0;
 
 // DOM Elements
 let questionCard;
@@ -28,6 +51,7 @@ let progressPercent;
 let prevBtn;
 let nextBtn;
 let loadingOverlay;
+let progressCharacter;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -40,6 +64,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     nextBtn = document.getElementById('nextBtn');
     loadingOverlay = document.getElementById('loadingOverlay');
 
+    // 캐릭터 요소 생성
+    createCharacterElement();
+
     // 질문 로드
     await loadQuestions();
 
@@ -51,7 +78,112 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderQuestion(currentIndex);
         updateProgress();
     }
+
+    // 캐릭터 초기화
+    startWalkAnimation();
+    resetIdleTimer();
 });
+
+/**
+ * 캐릭터 요소 생성
+ */
+function createCharacterElement() {
+    progressCharacter = document.createElement('div');
+    progressCharacter.className = 'progress-character walk';
+    progressCharacter.id = 'progressCharacter';
+
+    // progress-fill 안에 추가
+    const progressFillEl = document.getElementById('progressFill');
+    if (progressFillEl) {
+        progressFillEl.appendChild(progressCharacter);
+    }
+}
+
+/**
+ * 캐릭터 상태 변경
+ */
+function setCharacterState(state) {
+    characterState = state;
+    progressCharacter.className = `progress-character ${state}`;
+
+    // 걷기 애니메이션 관리
+    if (state === 'walk') {
+        startWalkAnimation();
+    } else {
+        stopWalkAnimation();
+
+        if (state === 'fall') {
+            progressCharacter.style.backgroundImage = `url('${CHARACTER_IMAGES.fall}')`;
+        } else if (state === 'yaho') {
+            progressCharacter.style.backgroundImage = `url('${CHARACTER_IMAGES.yaho}')`;
+        }
+    }
+}
+
+/**
+ * 걷기 애니메이션 시작
+ */
+function startWalkAnimation() {
+    stopWalkAnimation(); // 기존 애니메이션 정리
+
+    currentWalkFrame = 0;
+    updateWalkFrame();
+
+    walkAnimationTimer = setInterval(() => {
+        currentWalkFrame = (currentWalkFrame + 1) % CHARACTER_IMAGES.walk.length;
+        updateWalkFrame();
+    }, CHARACTER_CONFIG.walkFrameRate);
+}
+
+/**
+ * 걷기 프레임 업데이트
+ */
+function updateWalkFrame() {
+    if (characterState === 'walk' && progressCharacter) {
+        progressCharacter.style.backgroundImage = `url('${CHARACTER_IMAGES.walk[currentWalkFrame]}')`;
+    }
+}
+
+/**
+ * 걷기 애니메이션 정지
+ */
+function stopWalkAnimation() {
+    if (walkAnimationTimer) {
+        clearInterval(walkAnimationTimer);
+        walkAnimationTimer = null;
+    }
+}
+
+/**
+ * 무응답 타이머 리셋
+ */
+function resetIdleTimer() {
+    clearTimeout(idleTimer);
+
+    // 넘어진 상태였으면 다시 걷기로
+    if (characterState === 'fall') {
+        setCharacterState('walk');
+    }
+
+    idleTimer = setTimeout(() => {
+        if (characterState === 'walk') {
+            setCharacterState('fall');
+        }
+    }, CHARACTER_CONFIG.idleTimeout);
+}
+
+/**
+ * 야호 애니메이션 실행
+ */
+function triggerYaho() {
+    clearTimeout(idleTimer);
+    setCharacterState('yaho');
+
+    setTimeout(() => {
+        setCharacterState('walk');
+        resetIdleTimer();
+    }, CHARACTER_CONFIG.yahoDisplayTime);
+}
 
 /**
  * API에서 질문 로드
@@ -135,6 +267,9 @@ function handleAnswer(value) {
     // 진행률 업데이트
     updateProgress();
 
+    // 무응답 타이머 리셋
+    resetIdleTimer();
+
     // 자동으로 다음 질문 (0.4초 딜레이)
     setTimeout(() => {
         if (currentIndex < questions.length - 1) {
@@ -150,6 +285,7 @@ function handleAnswer(value) {
  */
 function goToPrev() {
     if (currentIndex > 0) {
+        resetIdleTimer();
         questionCard.classList.add('exit');
         setTimeout(() => {
             currentIndex--;
@@ -169,6 +305,9 @@ function goToNext() {
     }
 
     if (currentIndex < questions.length - 1) {
+        // 야호 애니메이션!
+        triggerYaho();
+
         questionCard.classList.add('exit');
         setTimeout(() => {
             currentIndex++;
@@ -248,6 +387,9 @@ async function submitTest() {
     if (isSubmitting) return;
     isSubmitting = true;
 
+    // 걷기 애니메이션 정지
+    stopWalkAnimation();
+
     // 로딩 표시
     loadingOverlay.classList.remove('hidden');
 
@@ -271,6 +413,7 @@ async function submitTest() {
         console.error('❌ 제출 실패:', error);
         loadingOverlay.classList.add('hidden');
         isSubmitting = false;
+        startWalkAnimation(); // 다시 걷기 시작
         showError('결과 저장에 실패했습니다. 다시 시도해주세요.');
     }
 }
@@ -284,6 +427,8 @@ function setupEventListeners() {
 
     // 키보드 네비게이션
     document.addEventListener('keydown', (e) => {
+        resetIdleTimer(); // 키보드 입력도 활동으로 인식
+
         if (e.key === 'ArrowLeft' && currentIndex > 0) {
             goToPrev();
         } else if (e.key === 'ArrowRight' && answers[currentIndex] !== null) {
@@ -292,6 +437,10 @@ function setupEventListeners() {
             handleAnswer(parseInt(e.key));
         }
     });
+
+    // 마우스/터치 활동도 무응답 타이머 리셋
+    document.addEventListener('mousemove', resetIdleTimer);
+    document.addEventListener('touchstart', resetIdleTimer);
 }
 
 /**
