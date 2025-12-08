@@ -4,8 +4,11 @@ import org.example.catp.entity.TestResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+
 @Repository
 public interface TestResultRepository extends JpaRepository<TestResult, String> {
-    // 기본 CRUD 기능(저장, 조회, 삭제)은 JpaRepository가 자동으로 제공하므로
-    // 추가 코드가 필요 없습니다.
+
+    // "입력한 시간(cutoffDate)보다 이전에(Before) 생성된(CreatedAt) 데이터 삭제(delete)"
+    void deleteByCreatedAtBefore(LocalDateTime cutoffDate);
 }
