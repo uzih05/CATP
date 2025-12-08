@@ -242,6 +242,22 @@ function renderAptitudeLegend(scores) {
 }
 
 /**
+ * 학과명으로 마스코트 이미지 경로 생성
+ * 파일명: 학과명.png (예: 컴퓨터공학과.png)
+ */
+function getMascotImagePath(departmentName) {
+    return `../assets/images/mascot/${departmentName}.png`;
+}
+
+/**
+ * 마스코트 이미지 로드 실패 시 기본 이미지로 대체
+ */
+function handleMascotError(img) {
+    img.onerror = null; // 무한 루프 방지
+    img.src = '../assets/images/mascot/default.png';
+}
+
+/**
  * 추천 학과 Top 3 렌더링
  */
 function renderTopDepartments() {
@@ -253,22 +269,27 @@ function renderTopDepartments() {
         return;
     }
 
-    const medals = ['🥇', '🥈', '🥉'];
-
-    container.innerHTML = departments.map((dept, index) => `
-        <div class="department-card glass-card">
-            <div class="department-rank">${medals[index] || index + 1}</div>
-            <h4 class="department-name">${dept.department.name}</h4>
-            <div class="department-match">
-                <span class="match-percentage">${dept.match_percentage}%</span>
-                <span class="match-label">일치</span>
+    container.innerHTML = departments.map((dept, index) => {
+        const deptName = dept.department.name;
+        const mascotPath = getMascotImagePath(deptName);
+        
+        return `
+            <div class="department-card glass-card">
+                <div class="department-rank">
+                    <img src="${mascotPath}" alt="${deptName} 마스코트" onerror="handleMascotError(this)">
+                </div>
+                <h4 class="department-name">${deptName}</h4>
+                <div class="department-match">
+                    <span class="match-percentage">${dept.match_percentage}%</span>
+                    <span class="match-label">일치</span>
+                </div>
+                <p class="department-reason">${dept.reason || '적성이 잘 맞습니다.'}</p>
+                <a href="${dept.department.url}" target="_blank" rel="noopener noreferrer" class="department-link">
+                    학과 자세히 보기 →
+                </a>
             </div>
-            <p class="department-reason">${dept.reason || '적성이 잘 맞습니다.'}</p>
-            <a href="${dept.department.url}" target="_blank" rel="noopener noreferrer" class="department-link">
-                학과 자세히 보기 →
-            </a>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 /**
