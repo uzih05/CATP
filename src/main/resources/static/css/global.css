@@ -181,18 +181,20 @@ p {
     object-fit: cover;
 }
 
+/* 영상 위에 검은 막을 씌워 글씨 가독성 확보 */
 .video-background .overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
+    background: rgba(0, 0, 0, 0.6); /* 투명도 60% */
+    backdrop-filter: blur(3px);      /* 배경 흐림 효과 */
     z-index: 1;
 }
 
 /* ---------- Fallback Gradient Background ---------- */
+/* 영상 로딩 실패 시 보여줄 정적 배경 */
 .gradient-background {
     position: fixed;
     top: 0;
@@ -200,74 +202,13 @@ p {
     width: 100%;
     height: 100%;
     z-index: var(--z-background);
+    /* 움직임 없는 고정 그라데이션 */
     background: linear-gradient(
             135deg,
             #4f46e5 0%,
-            #7c3aed 25%,
-            #a855f7 50%,
-            #ec4899 75%,
-            #f43f5e 100%
+            #7c3aed 100%
     );
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
-}
-
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-/* ---------- Floating Orbs ---------- */
-.floating-orbs {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: calc(var(--z-background) + 1);
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.4;
-}
-
-.orb-1 {
-    width: 400px;
-    height: 400px;
-    background: linear-gradient(135deg, var(--secondary-500), var(--pink-500));
-    top: -100px;
-    left: -100px;
-    animation: floatOrb 20s ease-in-out infinite;
-}
-
-.orb-2 {
-    width: 350px;
-    height: 350px;
-    background: linear-gradient(135deg, var(--primary-500), var(--secondary-400));
-    top: 20%;
-    right: -100px;
-    animation: floatOrb 25s ease-in-out infinite reverse;
-}
-
-.orb-3 {
-    width: 300px;
-    height: 300px;
-    background: linear-gradient(135deg, var(--pink-400), var(--secondary-500));
-    bottom: -50px;
-    left: 30%;
-    animation: floatOrb 22s ease-in-out infinite;
-    animation-delay: -5s;
-}
-
-@keyframes floatOrb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -30px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
+    background-size: cover;
 }
 
 /* ---------- Cherry Blossoms ---------- */
@@ -528,8 +469,6 @@ p {
         width: 40px;
         height: 40px;
     }
-
-    .orb { display: none; }
 }
 
 /* ===================================================
